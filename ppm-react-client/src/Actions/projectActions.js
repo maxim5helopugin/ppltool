@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS } from "./Types";
+import { GET_ERRORS, GET_PROJECTS } from "./Types";
 import errorReducer from "../reducers/errorReducer";
 
 export const createProject = (project, history) => async dispatch => {
@@ -12,4 +12,12 @@ export const createProject = (project, history) => async dispatch => {
       payload: error.response.data
     });
   }
+};
+
+export const getProjects = () => async dispatch => {
+  const res = await axios.get("http://localhost:8080/api/project/all");
+  dispatch({
+    type: GET_PROJECTS,
+    payload: res.data
+  });
 };
