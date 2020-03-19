@@ -5,22 +5,27 @@ import { connect } from "react-redux";
 import classnames from "classnames";
 
 class UpdateProject extends Component {
+  //set state
   constructor() {
     super();
+
     this.state = {
       id: "",
       projectName: "",
       projectIdentifier: "",
       description: "",
       start_date: "",
-      end_date: ""
+      end_date: "",
+      errors: {}
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) this.setState({ errors: nextProps.errors });
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
     const {
       id,
       projectName,
@@ -51,19 +56,18 @@ class UpdateProject extends Component {
 
   onSubmit(e) {
     e.preventDefault();
+
     const updateProject = {
       id: this.state.id,
       projectName: this.state.projectName,
       projectIdentifier: this.state.projectIdentifier,
       description: this.state.description,
       start_date: this.state.start_date,
-      end_date: this.state.end_date,
-      errors: {}
+      end_date: this.state.end_date
     };
 
     this.props.createProject(updateProject, this.props.history);
   }
-
   render() {
     const { errors } = this.state;
     return (
@@ -77,7 +81,7 @@ class UpdateProject extends Component {
                 <div className="form-group">
                   <input
                     type="text"
-                    className={classnames("form-control form-control-lg ", {
+                    className={classnames("form-control form-control-lg", {
                       "is-invalid": errors.projectName
                     })}
                     placeholder="Project Name"
@@ -92,28 +96,27 @@ class UpdateProject extends Component {
                 <div className="form-group">
                   <input
                     type="text"
-                    className={classnames("form-control form-control-lg ", {
-                      "is-invalid": errors.projectIdentifier
-                    })}
+                    className="form-control form-control-lg"
                     placeholder="Unique Project ID"
                     name="projectIdentifier"
                     value={this.state.projectIdentifier}
+                    onChange={this.onChange}
                     disabled
                   />
-                  {errors.projectIdentifier && (
-                    <div className="invalid-feedback">
-                      {errors.projectIdentifier}
-                    </div>
-                  )}
                 </div>
                 <div className="form-group">
                   <textarea
-                    className="form-control form-control-lg"
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.description
+                    })}
                     placeholder="Project Description"
                     name="description"
-                    value={this.state.description}
                     onChange={this.onChange}
-                  ></textarea>
+                    value={this.state.description}
+                  />
+                  {errors.description && (
+                    <div className="invalid-feedback">{errors.description}</div>
+                  )}
                 </div>
                 <h6>Start Date</h6>
                 <div className="form-group">
@@ -149,17 +152,17 @@ class UpdateProject extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  projects: state.project.projects,
-  errors: state.errors
-});
-
-UpdateProject.PropTypes = {
+UpdateProject.propTypes = {
   getProject: PropTypes.func.isRequired,
   createProject: PropTypes.func.isRequired,
   project: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
+
+const mapStateToProps = state => ({
+  project: state.project.project,
+  errors: state.errors
+});
 
 export default connect(mapStateToProps, { getProject, createProject })(
   UpdateProject
