@@ -9,6 +9,8 @@ import my_first_project.ppmtool.repositories.ProjectTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProjectTaskService {
 
@@ -26,16 +28,21 @@ public class ProjectTaskService {
 
         Integer sequence = backlog.getPtSequence();
         sequence++;
+        backlog.setPtSequence(sequence);
 
         projectTask.setProjectSequence(projectIdentifier + "-" + sequence);
         projectTask.setProjectIdentifier(projectIdentifier);
 
-        if(projectTask.getPriority() == 0 || projectTask.getPriority() == null)
+        if(projectTask.getPriority() == null)
             projectTask.setPriority(3);
 
         if(projectTask.getStatus() == null || projectTask.getStatus().equals(""))
             projectTask.setStatus("TODO");
 
         return projectTaskRepository.save(projectTask);
+    }
+
+    public Iterable<ProjectTask> getProjectTasks(String projectIdentifier){
+        return projectTaskRepository.findByProjectIdentifierOrderByPriority(projectIdentifier);
     }
 }
