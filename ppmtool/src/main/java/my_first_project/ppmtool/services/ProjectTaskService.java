@@ -45,7 +45,7 @@ public class ProjectTaskService {
                 projectTask.setStatus("TODO");
         }
         catch (Exception e){
-            throw new ProjectNotFoundException("Project Not Found");
+            throw new ProjectNotFoundException(projectIdentifier);
         }
 
         return projectTaskRepository.save(projectTask);
@@ -53,7 +53,7 @@ public class ProjectTaskService {
 
     public Iterable<ProjectTask> getProjectTasks(String projectIdentifier){
         if(projectRepository.findByProjectIdentifier(projectIdentifier) == null)
-            throw new ProjectNotFoundException("Project Not Found");
+            throw new ProjectNotFoundException(projectIdentifier);
 
         return projectTaskRepository.findByProjectIdentifierOrderByPriority(projectIdentifier);
     }
