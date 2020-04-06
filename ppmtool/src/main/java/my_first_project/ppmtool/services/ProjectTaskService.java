@@ -73,11 +73,16 @@ public class ProjectTaskService {
         return projectTask;
     }
 
-    public  ProjectTask updateByProjectSequence(ProjectTask projectTask, String backlogId){
-        ProjectTask projectTask1 = projectTaskRepository.findByProjectSequence(projectTask.getProjectSequence());
+    public  ProjectTask updateByProjectSequence(ProjectTask projectTask, String backlogId, String pt_id){
+        ProjectTask projectTask1 = findPtByProjectSequence(backlogId, pt_id);
         if(projectTask1 == null)
             throw new ProjectNotFoundException(projectTask.getProjectSequence());
         projectTask1 = projectTask;
         return projectTaskRepository.save(projectTask);
+    }
+
+    public void deleteProjectTask(String backlog_id, String pt_id){
+        ProjectTask projectTask1 = findPtByProjectSequence(backlog_id, pt_id);
+        projectTaskRepository.delete(projectTask1);
     }
 }
